@@ -161,7 +161,7 @@ def pop_last_menu(uri, images):
 
 def main():
     global menus
-    parser = argparse.ArgumentParser(description='bootstraps the repository to work with concourse CI')
+    parser = argparse.ArgumentParser(description='Interactive tool to clean up a docker registry')
     parser.add_argument('-r', '--registry', help="docker registry URI", nargs=1)
     parser.add_argument('-l', '--load', help="Load database from file (DEBUG)", nargs=1)
     parser.add_argument('-s', '--save', help="save database to file (DEBUG)", nargs=1)
