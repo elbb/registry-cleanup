@@ -8,8 +8,8 @@ import ast
 import copy 
 import collections
 from enum import Enum
-
 from tty_menu import tty_menu
+
 images_index = {}
 tags_index = {}
 images = {}

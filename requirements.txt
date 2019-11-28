@@ -1,0 +1,2 @@
+tty_menu==1.0.3
+faster_than_requests==0.5
