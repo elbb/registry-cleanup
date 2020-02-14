@@ -22,6 +22,7 @@ type exitMenuType string
 
 const (
 	exitMenu exitMenuType = "Exit"
+	backMenu exitMenuType = "Back"
 )
 
 func getImages(hub *registry.Registry) ([]string, error) {
@@ -98,12 +99,17 @@ func tagsPrompt(hub *registry.Registry, image string) ([]string, error) {
 		log.Fatalln(err)
 		return nil, err
 	}
-	tags = append(tags, string(exitMenu))
+	tags = append(tags, string(backMenu))
 	prompt := &survey.MultiSelect{
 		Message: "Tags",
 		Options: tags,
 	}
+	// err =
 	survey.AskOne(prompt, &selectedTags, survey.WithPageSize(22))
+	// if err.Error() == "interrupt" {
+	// 	fmt.Println("ctrl-C pressed. Exiting.")
+	// 	os.Exit(1)
+	// }
 	return selectedTags, nil
 }
 
@@ -120,7 +126,12 @@ func imagesPrompt(hub *registry.Registry) ([]string, error) {
 		Options: images,
 	}
 
+	// err =
 	survey.AskOne(prompt, &selectedImages, survey.WithPageSize(22))
+	// if err.Error() == "interrupt" {
+	// 	fmt.Println("ctrl-C pressed. Exiting.")
+	// 	os.Exit(1)
+	// }
 	return selectedImages, nil
 }
 
@@ -130,7 +141,12 @@ func singleActionPrompt(message string, actions []string) string {
 		Message: message,
 		Options: actions,
 	}
+	// err :=
 	survey.AskOne(prompt, &action)
+	// if err.Error() == "interrupt" {
+	// 	fmt.Println("ctrl-C pressed. Exiting.")
+	// 	os.Exit(1)
+	// }
 	return action
 }
 
@@ -139,7 +155,12 @@ func passwordPrompt() string {
 	prompt := &survey.Password{
 		Message: "Please enter your password",
 	}
-	survey.AskOne(prompt, &password)
+	err := survey.AskOne(prompt, &password)
+	switch {
+	case err.Error() == "interrupt":
+		fmt.Println("ctrl-C pressed. Exiting.")
+		os.Exit(1)
+	}
 	return password
 }
 
@@ -190,37 +211,39 @@ func main() {
 		}
 		fmt.Println(selectedImages)
 		if len(selectedImages) == 1 { // only one images selected
-			imagesAction := singleActionPrompt("Images", []string{"Delete", "Tags", "Back"})
-			if imagesAction == "Delete" {
-				yesno := singleActionPrompt("Really delete image '"+selectedImages[0]+"'?", []string{"Yes", "No"})
-				if yesno == "Yes" {
-					deleteImage(hub, selectedImages[0])
-				}
-			} else if imagesAction == "Tags" {
-				for {
-					selectedTags, _ := tagsPrompt(hub, selectedImages[0])
-					if contains(selectedTags, string(exitMenu)) {
-						break
+			for {
+
+				imagesAction := singleActionPrompt("Images", []string{"Delete", "Tags", "Back"})
+				if imagesAction == "Delete" {
+					yesno := singleActionPrompt("Really delete image '"+selectedImages[0]+"'?", []string{"Yes", "No"})
+					if yesno == "Yes" {
+						deleteImage(hub, selectedImages[0])
 					}
-					fmt.Println(selectedTags)
-					if len(selectedTags) > 0 {
-						for {
-							tagsaction := singleActionPrompt("Tags", []string{"Delete", "Back"})
-							if tagsaction == "Delete" {
-								yesno := singleActionPrompt("Really delete selected tags?", []string{"Yes", "No"})
-								if yesno == "Yes" {
-									fmt.Println("TODO: Deleting tags: ", selectedTags, " for image ", selectedImages[0])
-									deleteTags(hub, selectedImages[0], selectedTags)
+				} else if imagesAction == "Tags" {
+					for {
+						selectedTags, _ := tagsPrompt(hub, selectedImages[0])
+						if contains(selectedTags, string(backMenu)) {
+							break
+						}
+						fmt.Println(selectedTags)
+						if len(selectedTags) > 0 {
+							for {
+								tagsaction := singleActionPrompt("Tags", []string{"Delete", "Back"})
+								if tagsaction == "Delete" {
+									yesno := singleActionPrompt("Really delete selected tags?", []string{"Yes", "No"})
+									if yesno == "Yes" {
+										fmt.Println("TODO: Deleting tags: ", selectedTags, " for image ", selectedImages[0])
+										deleteTags(hub, selectedImages[0], selectedTags)
+									}
+								} else if tagsaction == "Back" {
+									break
 								}
-								break
-							} else if tagsaction == "Back" {
-								break
 							}
 						}
 					}
+				} else if imagesAction == "Back" {
+					break
 				}
-			} else {
-				break
 			}
 		} else if len(selectedImages) > 1 { // multiple images selected
 			imagesAction := singleActionPrompt("Images", []string{"Delete", "Back"})
