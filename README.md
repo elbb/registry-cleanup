@@ -7,7 +7,7 @@ This interactive tool allows a user to delete images and/or single tags from a d
 
 ### Building
 Clone the repo wherever you like and build it using 
-` $ make `
+` $ make registry-cleanup`
 
 You find the binary located in `$GOBIN`
 
@@ -31,3 +31,12 @@ $ ./registry-cleanup -address <docker-registry-uri>
 
 Note: Follow the instructions the program gives you on exit to entirely delete all residues of docker images.
 
+## Using with docker
+Build the image using
+` $ make docker`
+
+Start the application using
+` $ docker run --rm -it registry-cleanup <options>`
+
+e.g. 
+` $ docker run --rm -it registry-cleanup -address https://docker.conplement.de`
