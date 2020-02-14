@@ -1,30 +1,33 @@
 # Docker registry cleanup tool
-This interactive tool allows a user to delete images and/or single tags from a docker registry.
+This interactive tool allows a user to delete images and/or single tags from a docker registry. It is written in golang.
 
 ## Requirements
-The tool was written in python3. Install the projects dependencies by
-```
-$ pip3 install -r requirements.txt
-```
+
+* golang 1.13
+
+### Building
+Clone the repo wherever you like and build it using 
+` $ make `
+
+You find the binary located in `$GOBIN`
 
 ## Usage
 
 ```
-./cleanup.py -h
-usage: cleanup.py [-h] [-r REGISTRY]
+./registry-cleanup -h
+Usage of registry-cleanup
 
-Interactive tool to clean up a docker registry
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -r REGISTRY, --registry REGISTRY
-                        docker registry URI
+Usage:
+  -address string
+    	docker registry URI (default "http://localhost:5000")
+  -user string
+    	User for auth to docker registry, empty for anymous
 ```
 
 Connect to a docker registry and let the menu guide you through the catalog.
 ```
-$ ./cleaup.py -r <docker-registry-uri>
+$ ./registry-cleanup -address <docker-registry-uri>
 ```
 
-Note: To see the changes after deleting tags or images you need to refresh.
+Note: Follow the instructions the program gives you on exit to entirely delete all residues of docker images.
 
