@@ -104,12 +104,12 @@ func tagsPrompt(hub *registry.Registry, image string) ([]string, error) {
 		Message: "Tags",
 		Options: tags,
 	}
-	// err =
-	survey.AskOne(prompt, &selectedTags, survey.WithPageSize(22))
-	// if err.Error() == "interrupt" {
-	// 	fmt.Println("ctrl-C pressed. Exiting.")
-	// 	os.Exit(1)
-	// }
+	err = survey.AskOne(prompt, &selectedTags, survey.WithPageSize(22))
+	if err != nil {
+		if err.Error() == "interrupt" {
+			os.Exit(1)
+		}
+	}
 	return selectedTags, nil
 }
 
@@ -126,12 +126,12 @@ func imagesPrompt(hub *registry.Registry) ([]string, error) {
 		Options: images,
 	}
 
-	// err =
-	survey.AskOne(prompt, &selectedImages, survey.WithPageSize(22))
-	// if err.Error() == "interrupt" {
-	// 	fmt.Println("ctrl-C pressed. Exiting.")
-	// 	os.Exit(1)
-	// }
+	err = survey.AskOne(prompt, &selectedImages, survey.WithPageSize(22))
+	if err != nil {
+		if err.Error() == "interrupt" {
+			os.Exit(1)
+		}
+	}
 	return selectedImages, nil
 }
 
@@ -141,12 +141,12 @@ func singleActionPrompt(message string, actions []string) string {
 		Message: message,
 		Options: actions,
 	}
-	// err :=
-	survey.AskOne(prompt, &action)
-	// if err.Error() == "interrupt" {
-	// 	fmt.Println("ctrl-C pressed. Exiting.")
-	// 	os.Exit(1)
-	// }
+	err := survey.AskOne(prompt, &action)
+	if err != nil {
+		if err.Error() == "interrupt" {
+			os.Exit(1)
+		}
+	}
 	return action
 }
 
@@ -156,10 +156,10 @@ func passwordPrompt() string {
 		Message: "Please enter your password",
 	}
 	err := survey.AskOne(prompt, &password)
-	switch {
-	case err.Error() == "interrupt":
-		fmt.Println("ctrl-C pressed. Exiting.")
-		os.Exit(1)
+	if err != nil {
+		if err.Error() == "interrupt" {
+			os.Exit(1)
+		}
 	}
 	return password
 }
@@ -212,7 +212,6 @@ func main() {
 		fmt.Println(selectedImages)
 		if len(selectedImages) == 1 { // only one images selected
 			for {
-
 				imagesAction := singleActionPrompt("Images", []string{"Delete", "Tags", "Back"})
 				if imagesAction == "Delete" {
 					yesno := singleActionPrompt("Really delete image '"+selectedImages[0]+"'?", []string{"Yes", "No"})
