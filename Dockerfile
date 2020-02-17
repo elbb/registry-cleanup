@@ -1,15 +1,14 @@
-FROM golang:1.13.8-alpine
-
+FROM golang:1.13.8-alpine as builder
 RUN mkdir -p /build/src/registry-cleanup /build/bin
-RUN addgroup -S user && adduser -S -G user user 
 COPY . /build/src/registry-cleanup
 ENV GOPATH=/build
 ENV GOBIN=/build/bin
 WORKDIR /build/src/registry-cleanup/cmd/registry-cleanup
 RUN go install 
-WORKDIR /build 
-RUN rm -rf /build/src
-RUN chown -R user:user /build/bin/
+
+FROM alpine:3.11.3
+COPY --from=builder /build/bin/registry-cleanup /usr/local/bin/registry-cleanup
+RUN addgroup -S user && adduser -S -G user user 
 USER user
-ENTRYPOINT [ "/build/bin/registry-cleanup"]
+ENTRYPOINT [ "/usr/local/bin/registry-cleanup"]
 CMD ["-help"]
