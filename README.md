@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/elbb/registry-cleanup/master/.assets/logo.png" height="200">
+
 # registry-cleanup
 This interactive tool allows a user to delete images and/or single tags from a docker registry. It is written in golang.
 
