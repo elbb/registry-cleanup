@@ -1,13 +1,15 @@
 <img src="https://raw.githubusercontent.com/elbb/registry-cleanup/master/.assets/logo.png" height="200">
 
 # registry-cleanup
+
 This interactive tool allows a user to delete images and/or single tags from a docker registry. It is written in golang.
 
 ## Requirements
 
-* golang 1.13
+-   golang 1.13
 
 ### Building
+
 Clone the repo wherever you like and build it using 
 ` $ make registry-cleanup`
 
@@ -15,26 +17,28 @@ You find the binary located in `$GOBIN`
 
 ## Usage
 
-```
-./registry-cleanup -h
-Usage of registry-cleanup
+    $GOBIN/registry-cleanup -h
+    Usage of registry-cleanup
 
-Usage:
-  -address string
-    	docker registry URI (default "http://localhost:5000")
-  -user string
-    	User for auth to docker registry, empty for anymous
-```
+    Usage:
+      -address string
+        	docker registry URI (default "http://localhost:5000")
+      -user string
+        	User for auth to docker registry, empty for anymous
 
 Connect to a docker registry and let the menu guide you through the catalog.
-```
-$ ./registry-cleanup -address <docker-registry-uri>
-```
+
+    $ $GOBIN/registry-cleanup -address <docker-registry-uri>
 
 Note: Follow the instructions the program gives you on exit to entirely delete all residues of docker images.
 
 ## Using with docker
+
+**NOTE: when your docker registry is provided locally you might want to add `--network-mode host` or `--network <your-docker-network>` to the `docker run` command,** e.g. 
+`$ docker run --rm -it --network-mode host ...`
+
 ### Use the image from dockerhub
+
 Start the application using
 ` $ docker run  --rm -it elbb/registry-cleanup <options>`
 
@@ -42,6 +46,7 @@ e.g.
 ` $ docker run --rm -it elbb/registry-cleanup -address http://localhost:5000`
 
 ### Build your own image
+
 Build the image using
 ` $ make docker`
 
@@ -55,10 +60,10 @@ e.g.
 
 Licensed under either of
 
- * Apache License, Version 2.0
-   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license
-   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+-   Apache License, Version 2.0
+    ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+-   MIT license
+    ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
